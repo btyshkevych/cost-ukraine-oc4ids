@@ -1,0 +1,10 @@
+# 1.5.2 breaks the translation of the sidebar menu
+Sphinx==1.5.1
+
+# Sphinx
+# The next commit causes "'any' reference target not found" errors
+-e git+https://github.com/rtfd/recommonmark.git@81d7c6f7b37981ac22571dd91a7cc9d24c3e66a1#egg=recommonmark
+
+# Make
+sphinx-intl<1
+transifex-client
