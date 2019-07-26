@@ -1,0 +1,7 @@
+Code,Title,Extension
+Point,Точка,Location
+MultiPoint,Мультиточка,Location
+LineString,Лінія,Location
+MultiLineString,Мультилінія,Location
+Polygon,Полігон,Location
+MultiPolygon,Мультиполігон,Location

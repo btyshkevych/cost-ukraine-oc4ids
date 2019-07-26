@@ -1,0 +1,1169 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://portal.costukraine.org/",
+  "title": "Стандарт відкритих даних порталу CoST «Прозора інфраструктура»",
+  "description": "Модель даних побудована відповідно до Open Contracting for Infrastructure Data Standards (v. 0.9.1) з урахуванням розширень порталу. При розробці моделей даних для розширень врахована логіка побудови Open Contracting Data Standards та використані відповідні структурні блоки. Кожне розширення має відповідну позначку в описі.",
+  "type": "object",
+  "required": ["id"],
+  "properties": {
+    "id": {
+      "title": "Ідентифікатор",
+      "description": "Унікальний ідентифікатор інфраструктурного проекту.",
+      "type": "string"
+    },
+    "updated": {
+      "title": "Востаннє оновлено",
+      "description": "Дата останнього оновлення інформації на рівні проекту.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "title": {
+      "title": "Назва",
+      "description": "Назва проекту. Джерело даних система Prozorro.",
+      "type": "string"
+    },
+    "description": {
+      "title": "Опис",
+      "description": "Детальний опис проекту, що наданий замовником.",
+      "type": "string"
+    },
+    "status": {
+      "title": "Статус",
+      "description": "Поточна фаза проекту відповідно до довідника ProjectStatus.",
+      "type": "string",
+      "enum": [
+        "identification",
+        "preparation",
+        "implementation",
+        "completion",
+        "completed",
+        "cancelled"
+      ],
+      "codelist": "projectStatus.csv",
+      "openCodelist": false
+    },
+    "scheduleStatus": {
+      "title": "Статус виконання графіка",
+      "description": "[Розширення] Поточний статус виконання графіка проекту відповідно до довідника ScheduleStatus.",
+      "type": "string",
+      "enum": [
+        "lagsBehindSchedule",
+        "timely",
+        "aheadOfSchedule"
+      ],
+      "codelist": "scheduleStatus.csv",
+      "openCodelist": false
+    },
+    "period": {
+      "title": "Період",
+      "description": "Період, протягом якого реалізується проект.",
+      "$ref": "#/definitions/Period"
+    },
+    "sector": {
+      "title": "Сектор",
+      "description": "Один або декілька секторів інфраструктури, в межах яких впроваджується проект. Визначається відповідно до довідника ProjectSector.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "codelist": "projectSector.csv",
+      "openCodelist": true
+    },
+    "purpose": {
+      "title": "Мета",
+      "description": "Соціально-економічна мета реалізації проекту.",
+      "type": "string"
+    },
+    "type": {
+      "title": "Тип",
+      "description": "Тип проекту відповідно до довідника ProjectType.",
+      "type": "string",
+      "enum": [
+        "construction",
+        "rehabilitation",
+        "replacement"
+      ],
+      "codelist": "projectType.csv",
+      "openCodelist": false
+    },
+    "items": {
+      "title": "Предмет(-и) проекту",
+      "description": "[Розширення] Характеристика предмета або предметів проекту.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Item"
+      },
+      "uniqueItems": true
+    },
+    "locations": {
+      "title": "Розташування",
+      "description": "Характеристика розташування об'єкта інфраструктури.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Location"
+      },
+      "uniqueItems": true
+    },
+    "budget": {
+      "title": "Бюджет",
+      "description": "Характеристики бюджету проекту.",
+      "type": "object",
+      "properties": {
+        "amount": {
+          "title": "Сума фінансування",
+          "description": "Загальна сума фінансування проекту.",
+          "$ref": "#/definitions/Value"
+        },
+        "approvalDate": {
+          "title": "Дата затвердження фінансування",
+          "description": "Дата ухвалення документа, яким затверджене фінансування проекту.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "estimatedAmount": {
+          "title": "Кошторисна вартість",
+          "description": "[Розширення] Вартість проекту відповідно до затвердженого кошторису.",
+          "$ref": "#/definitions/Value"
+        },
+        "budgetBreakdown": {
+          "type": "array",
+          "title": "Структура бюджету",
+          "description": "Структура фінансування проекту за основними джерелами.",
+          "items": {
+            "$ref": "#/definitions/BudgetBreakdown"
+          }
+        }
+      }
+    },
+    "documents": {
+      "title": "Документи",
+      "description": "Документи, що пов'язані з проектом.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Document"
+      }
+    },
+    "contractingProcesses": {
+      "title": "Закупівлі",
+      "description": "Закупівлі, що пов'язані з проектом.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ContractingProcess"
+      }
+    },
+    "completion": {
+      "title": "Завершення",
+      "description": "Остаточні характеристики проекту.",
+      "type": "object",
+      "properties": {
+        "endDate": {
+          "title": "Дата завершення",
+          "description": "Остаточна дата завершення проекту.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "finalValue": {
+          "title": "Остаточна вартість",
+          "description": "Остаточна вартість проекту.",
+          "$ref": "#/definitions/Value"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Item": {
+      "title": "Предмет проекту",
+      "type": "object",
+      "description": "[Розширення] Характеристика предмета проекту.",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Локальний унікальний ідентифікатор предмета.",
+          "type": ["string", "integer"],
+          "minLength": 1
+        },
+        "classification": {
+          "title": "Класифікація",
+          "description": "Класифікація предметів за типом об'єктів.",
+          "$ref": "#/definitions/Classification"
+        },
+        "additionalClassifications": {
+          "title": "Додаткові класифікації",
+          "description": "Додаткові класифікації предмету. Наприклад, за категоріями, значенням доріг і вулиць.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Classification"
+          },
+          "uniqueItems": true,
+          "wholeListMerge": true
+        },
+        "quantity": {
+          "title": "Кількість",
+          "description": "Кількість одиниць, у яких вимірюється предмет.",
+          "type": ["number", "null"]
+        },
+        "unit": {
+          "title": "Одиниця вимірювання",
+          "description": "Одиниця вимірювання предмету.",
+          "type": "object",
+          "properties": {
+            "scheme": {
+              "title": "Схема",
+              "description": "Код або будь-який інший ідентифікатор переліку одиниць вимірювання. Портал «Прозора інфраструктура» використовує одиниці вимірювання UN/CEFACT.",
+              "type": ["string", "null"]
+            },
+            "id": {
+              "title": "Ідентифікатор",
+              "description": "Ідентифікатор одиниці виміру відповідно до довідника UnitCodes.",
+              "type": ["string", "null"],
+              "versionId": true
+            },
+            "name": {
+              "title": "Назва",
+              "description": "Назва одиниці виміру відповідно до довідника UnitCodes.",
+              "type": ["string", "null"]
+            }
+          }
+        }
+      }
+    },
+    "ContractingProcess": {
+      "title": "Закупівлі",
+      "description": "Дані про закупівлі, що виконані в рамках проекту. Джерело даних — Prozorro.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Ідентифікатор закупівлі. Для Prozorro вказується OCID (атрибут 'tenderID').",
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "title": "Резюме",
+          "description": "Основні відомості про закупівлю.",
+          "$ref": "#/definitions/ContractingProcessSummary"
+        }
+      },
+      "required": ["id"]
+    },
+    "ContractingProcessSummary": {
+      "type": "object",
+      "title": "Резюме",
+      "description": "Основні відомості про закупівлю.",
+      "properties": {
+        "ocid": {
+          "title": "Ідентифікатор (OCID)",
+          "description": "OCID закупівлі. У системі Prozorro відповідає атрибуту 'tenderID'",
+          "type": "string"
+        },
+        "nature": {
+          "title": "Природа угоди",
+          "description": "Природа угоди за переважними видами робіт відповідно до довідника ContractNature.",
+          "type": "array",
+          "items": {
+            "type": ["string"],
+            "enum": [
+              "design",
+              "construction",
+              "supervision"
+            ]
+          },
+          "codelist": "contractNature.csv",
+          "openCodelist": false
+        },
+        "natureType": {
+          "title": "Тип угоди",
+          "description": "[Розширення] Тип угоди відповідно до довідника ContractNatureType.",
+          "type": "array",
+          "items": {
+            "type": ["string"],
+            "enum": []
+          },
+          "codelist": "сontractNatureType.csv",
+          "openCodelist": false
+        },
+        "scheduleStatus": {
+          "title": "Статус виконання графіка",
+          "description": "[Розширення] Поточний статус виконання графіка робіт відповідно до довідника ScheduleStatus.",
+          "type": "string",
+          "enum": [
+            "lagsBehindSchedule",
+            "timely",
+            "aheadOfSchedule"
+          ],
+          "codelist": "scheduleStatus.csv",
+          "openCodelist": false
+        },
+        "description": {
+          "title": "Опис",
+          "description": "Детальний опис предмету договору.",
+          "type": "string"
+        },
+        "status": {
+          "title": "Статус",
+          "description": "Статус укладення й реалізації угоди відповідно до довідника ContractingProcessStatus.",
+          "type": "string",
+          "enum": [
+            "pre-award",
+            "active",
+            "closed"
+          ],
+          "codelist": "contractingProcessStatus.csv",
+          "openCodelist": false
+        },
+        "tender": {
+          "title": "Тендер",
+          "description": "Характеристика тендеру.",
+          "type": "object",
+          "properties": {
+            "procurementMethod": {
+              "title": "Procurement method",
+              "description": "Метод торгів, що використовується під час закупівлі, відповідно до довідника Method.",
+              "type": "string",
+              "enum": [
+                "open",
+                "selective",
+                "limited",
+                "direct"
+              ],
+              "codelist": "method.csv",
+              "openCodelist": false
+            },
+            "procurementMethodDetails": {
+              "title": "Вид закупівлі",
+              "description": "Вид закупівлі з системи Prozorro відповідно до довідника MethodDetails.",
+              "type": "string",
+              "enum": [
+                "belowThreshold",
+                "aboveThresholdUA",
+                "aboveThresholdEU",
+                "negotiation",
+                "negotiation.quick",
+                "aboveThresholdUA.defense",
+                "competitiveDialogueUA",
+                "competitiveDialogueEU",
+                "competitiveDialogueUA.stage2",
+                "competitiveDialogueEU.stage2",
+                "reporting",
+                "esco",
+                "closeFrameworkAgreementUA",
+                "closeFrameworkAgreementSelectionUA"
+              ],
+              "codelist": "methodDetails.csv",
+              "openCodelist": false
+            },
+            "costEstimate": {
+              "title": "Очікувана вартість",
+              "description": "Очікувана вартість закупівлі.",
+              "$ref": "#/definitions/Value"
+            },
+            "numberOfTenderers": {
+              "title": "Кількість учасників",
+              "description": "Кількість учасників тендеру.",
+              "type": "number"
+            },
+            "procuringEntity": {
+              "title": "Замовник",
+              "description": "[Розширення] Дані про замовника.",
+              "$ref": "#/definitions/Organization"
+            }
+          }
+        },
+        "suppliers": {
+          "title": "Постачальники",
+          "description": "[Розширення] Дані про всіх постачальників, з якими укладені угоди, в рамках даної закупівлі.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Organization"
+          }
+        },
+        "contractValue": {
+          "title": "Вартість угоди.",
+          "description": "Початкова вартість угоди.",
+          "$ref": "#/definitions/Value"
+        },
+        "contractPeriod": {
+          "title": "Термін",
+          "description": "Початковий термін дії угоди.",
+          "$ref": "#/definitions/Period"
+        },
+        "finalValue": {
+          "title": "Остаточна вартість",
+          "description": "Остаточна вартість угоди.",
+          "$ref": "#/definitions/Value"
+        },
+        "documents": {
+          "title": "Документи",
+          "description": "Документи, що пов'язані з даною закупівлею.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Document"
+          }
+        },
+        "modifications": {
+          "title": "Зміни",
+          "description": "Опис змін умов угоди.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Modification"
+          }
+        }
+      }
+    },
+    "Modification": {
+      "title": "Зміни",
+      "description": "Структурований опис змін до угод.",
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Локальний унікальний ідентифікатор змін.",
+          "type": ["string", "integer"],
+          "minLength": 1
+        },
+        "date": {
+          "title": "Дата",
+          "description": "Дата внесення змін.",
+          "type": ["string"],
+          "format": "date-time"
+        },
+        "contractNumber": {
+          "title": "Номер угоди",
+          "description": "[Розширення] Номер додаткової угоди, відповідно до якої вносяться зміни.",
+          "type": ["string"]
+        },
+        "type": {
+          "title": "Тип",
+          "description": "Тип змін відповідно до довідника ModificationType.",
+          "type": ["string"],
+          "codelist": "modificationType.csv",
+          "openCodelist": true
+        },
+        "oldContractValue": {
+          "title": "Стара вартість угоди",
+          "description": "Вартість угоди до внесення даних змін, враховуючи попередні зміни.",
+          "$ref": "#/definitions/Value"
+        },
+        "newContractValue": {
+          "title": "Нова вартість угоди",
+          "description": "Вартість угоди після внесення змін.",
+          "$ref": "#/definitions/Value"
+        },
+        "oldContractPeriod": {
+          "title": "Старий термін дії угоди",
+          "description": "Термін дії угоди до внесення даних змін, враховуючи попередні зміни.",
+          "$ref": "#/definitions/Period"
+        },
+        "newContractPeriod": {
+          "title": "Новий термін дії угоди",
+          "description": "Термін дії угоди після внесення змін.",
+          "$ref": "#/definitions/Period"
+        }
+      }
+    },
+    "Period": {
+      "title": "Період",
+      "description": "Характеристика періоду, протягом якого відбувається певна подія.",
+      "type": "object",
+      "properties": {
+        "startDate": {
+          "title": "Початок",
+          "description": "Дата початку періоду.",
+          "type": ["string"],
+          "format": "date-time"
+        },
+        "endDate": {
+          "title": "Завершення",
+          "description": "Дата завершення періоду.",
+          "type": ["string"],
+          "format": "date-time"
+        },
+        "durationInDays": {
+          "title": "Тривалість (днів)",
+          "description": "Тривалість періоду у днях.",
+          "type": ["integer"]
+        }
+      }
+    },
+    "Classification": {
+      "title": "Класифікація",
+      "description": "Дані про основну класифікацію.",
+      "type": "object",
+      "properties": {
+        "scheme": {
+          "title": "Схема",
+          "description": "Код, що використовується для ідентифікації використаного класифікатора.",
+          "type": ["string"]
+        },
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Код або будь-який інший ідентифікатор класу.",
+          "type": ["string", "integer"]
+        },
+        "description": {
+          "title": "Опис",
+          "description": "Назва або текстовий опис класу.",
+          "type": ["string"]
+        }
+      }
+    },
+    "Location": {
+      "type": "object",
+      "title": "Розташування",
+      "description": "Характеристика розташування об'єкта інфраструктури.",
+      "properties": {
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Локальний унікальний ідентифікатор розташування.",
+          "type": "string",
+          "minLength": 1
+        },
+        "geometry": {
+          "type": ["object"],
+          "title": "Геометрія",
+          "description": "Просторові дані у стандарті GeoJSON (https://geojson.org/).",
+          "properties": {
+            "type": {
+              "title": "Тип",
+              "description": "Тип геометричних об'єктів відповідно до довідника GeometryType",
+              "type": ["string"],
+              "enum": [
+                "Point",
+                "MultiPoint",
+                "LineString",
+                "MultiLineString",
+                "Polygon",
+                "MultiPolygon"
+              ],
+              "codelist": "geometryType.csv",
+              "openCodelist": false
+            },
+            "coordinates": {
+              "title": "Координати",
+              "description": "Масив або вкладений масив географічних координат, що описують геометричні об'єкти",
+              "type": ["array"],
+              "items": {
+                "type": ["number","array"]
+              }
+            }
+          }
+        },
+        "gazetteer": {
+          "type": ["object"],
+          "title": "Газетир",
+          "description": "Опис розташування за допомогою газетира.",
+          "properties": {
+            "scheme": {
+              "title": "Схема",
+              "description": "Код або будь-який інший ідентифікатор використаного газетира.",
+              "type": ["string"]
+            },
+            "identifiers": {
+              "title": "Ідентифікатор(-и)",
+              "description": "Один або більше кодів з визначеного газетиру. У випадку автомобільних шляхів, зазначаються індекси.",
+              "type": ["array"],
+              "items": {
+                "type": ["string"]
+              }
+            }
+          }
+        },
+        "length": {
+          "type": ["object"],
+          "title": "Довжина",
+          "description": "[Розширення] Довжина відрізка автомобільного шляху.",
+          "properties": {
+            "quantity": {
+              "title": "Кількість",
+              "description": "Кількість одиниць, у яких вимірюється довжина відрізка.",
+              "type": ["number", "null"]
+            },
+            "unit": {
+              "title": "Одиниця вимірювання",
+              "description": "Одиниця вимірювання.",
+              "type": "object",
+              "properties": {
+                "scheme": {
+                  "title": "Схема",
+                  "description": "Код або будь-який інший ідентифікатор переліку одиниць вимірювання. Портал «Прозора інфраструктура» використовує одиниці вимірювання UN/CEFACT.",
+                  "type": ["string", "null"]
+                },
+                "id": {
+                  "title": "Ідентифікатор",
+                  "description": "Ідентифікатор одиниці виміру відповідно до довідника UnitCodes.",
+                  "type": ["string", "null"]
+                },
+                "name": {
+                  "title": "Назва",
+                  "description": "Назва одиниці виміру відповідно до довідника UnitCodes.",
+                  "type": ["string", "null"]
+                }
+              }
+            }
+          }
+        },
+        "pikets": {
+          "title": "Пікети",
+          "description": "[Розширення] Пікети, які обмежують відрізок(-ки) робіт.",
+          "type": ["array"],
+          "items": {
+            "type": ["object"],
+            "properties": {
+              "startPiket": {
+                "title": "Початковий пікет",
+                "description": "Відстань початкового пікету в метрах.",
+                "type": ["integer", "null"]
+              },
+              "endPiket": {
+                "title": "Кінцевий пікет",
+                "description": "Відстань кінцевого пікету в метрах.",
+                "type": ["integer", "null"]
+              }
+            }
+          }
+        },
+        "address": {
+          "title": "Адреса",
+          "description": "Адреса, за якою відбуваються роботи.",
+          "$ref": "#/definitions/Address"
+        }
+      },
+      "required": ["id"]
+    },
+    "Value": {
+      "title": "Вартість",
+      "description": "Фінансова вартість.",
+      "type": "object",
+      "properties": {
+        "amount": {
+          "title": "Обсяг",
+          "description": "Обсяг як число.",
+          "type": ["number"]
+        },
+        "currency": {
+          "title": "Валюта",
+          "description": "Код валюти, у якій виражений обсяг, відповідно до ISO4217.",
+          "type": ["string"],
+          "codelist": "currency.csv",
+          "openCodelist": false,
+          "enum": [
+            "ADP",
+            "AED",
+            "AFA",
+            "AFN",
+            "ALK",
+            "ALL",
+            "AMD",
+            "ANG",
+            "AOA",
+            "AOK",
+            "AON",
+            "AOR",
+            "ARA",
+            "ARP",
+            "ARS",
+            "ARY",
+            "ATS",
+            "AUD",
+            "AWG",
+            "AYM",
+            "AZM",
+            "AZN",
+            "BAD",
+            "BAM",
+            "BBD",
+            "BDT",
+            "BEC",
+            "BEF",
+            "BEL",
+            "BGJ",
+            "BGK",
+            "BGL",
+            "BGN",
+            "BHD",
+            "BIF",
+            "BMD",
+            "BND",
+            "BOB",
+            "BOP",
+            "BOV",
+            "BRB",
+            "BRC",
+            "BRE",
+            "BRL",
+            "BRN",
+            "BRR",
+            "BSD",
+            "BTN",
+            "BUK",
+            "BWP",
+            "BYB",
+            "BYN",
+            "BYR",
+            "BZD",
+            "CAD",
+            "CDF",
+            "CHC",
+            "CHE",
+            "CHF",
+            "CHW",
+            "CLF",
+            "CLP",
+            "CNY",
+            "COP",
+            "COU",
+            "CRC",
+            "CSD",
+            "CSJ",
+            "CSK",
+            "CUC",
+            "CUP",
+            "CVE",
+            "CYP",
+            "CZK",
+            "DDM",
+            "DEM",
+            "DJF",
+            "DKK",
+            "DOP",
+            "DZD",
+            "ECS",
+            "ECV",
+            "EEK",
+            "EGP",
+            "ERN",
+            "ESA",
+            "ESB",
+            "ESP",
+            "ETB",
+            "EUR",
+            "FIM",
+            "FJD",
+            "FKP",
+            "FRF",
+            "GBP",
+            "GEK",
+            "GEL",
+            "GHC",
+            "GHP",
+            "GHS",
+            "GIP",
+            "GMD",
+            "GNE",
+            "GNF",
+            "GNS",
+            "GQE",
+            "GRD",
+            "GTQ",
+            "GWE",
+            "GWP",
+            "GYD",
+            "HKD",
+            "HNL",
+            "HRD",
+            "HRK",
+            "HTG",
+            "HUF",
+            "IDR",
+            "IEP",
+            "ILP",
+            "ILR",
+            "ILS",
+            "INR",
+            "IQD",
+            "IRR",
+            "ISJ",
+            "ISK",
+            "ITL",
+            "JMD",
+            "JOD",
+            "JPY",
+            "KES",
+            "KGS",
+            "KHR",
+            "KMF",
+            "KPW",
+            "KRW",
+            "KWD",
+            "KYD",
+            "KZT",
+            "LAJ",
+            "LAK",
+            "LBP",
+            "LKR",
+            "LRD",
+            "LSL",
+            "LSM",
+            "LTL",
+            "LTT",
+            "LUC",
+            "LUF",
+            "LUL",
+            "LVL",
+            "LVR",
+            "LYD",
+            "MAD",
+            "MDL",
+            "MGA",
+            "MGF",
+            "MKD",
+            "MLF",
+            "MMK",
+            "MNT",
+            "MOP",
+            "MRO",
+            "MRU",
+            "MTL",
+            "MTP",
+            "MUR",
+            "MVQ",
+            "MVR",
+            "MWK",
+            "MXN",
+            "MXP",
+            "MXV",
+            "MYR",
+            "MZE",
+            "MZM",
+            "MZN",
+            "NAD",
+            "NGN",
+            "NIC",
+            "NIO",
+            "NLG",
+            "NOK",
+            "NPR",
+            "NZD",
+            "OMR",
+            "PAB",
+            "PEH",
+            "PEI",
+            "PEN",
+            "PES",
+            "PGK",
+            "PHP",
+            "PKR",
+            "PLN",
+            "PLZ",
+            "PTE",
+            "PYG",
+            "QAR",
+            "RHD",
+            "ROK",
+            "ROL",
+            "RON",
+            "RSD",
+            "RUB",
+            "RUR",
+            "RWF",
+            "SAR",
+            "SBD",
+            "SCR",
+            "SDD",
+            "SDG",
+            "SDP",
+            "SEK",
+            "SGD",
+            "SHP",
+            "SIT",
+            "SKK",
+            "SLL",
+            "SOS",
+            "SRD",
+            "SRG",
+            "SSP",
+            "STD",
+            "STN",
+            "SUR",
+            "SVC",
+            "SYP",
+            "SZL",
+            "THB",
+            "TJR",
+            "TJS",
+            "TMM",
+            "TMT",
+            "TND",
+            "TOP",
+            "TPE",
+            "TRL",
+            "TRY",
+            "TTD",
+            "TWD",
+            "TZS",
+            "UAH",
+            "UAK",
+            "UGS",
+            "UGW",
+            "UGX",
+            "USD",
+            "USN",
+            "USS",
+            "UYI",
+            "UYN",
+            "UYP",
+            "UYU",
+            "UZS",
+            "VEB",
+            "VEF",
+            "VNC",
+            "VND",
+            "VUV",
+            "WST",
+            "XAF",
+            "XAG",
+            "XAU",
+            "XBA",
+            "XBB",
+            "XBC",
+            "XBD",
+            "XCD",
+            "XDR",
+            "XEU",
+            "XFO",
+            "XFU",
+            "XOF",
+            "XPD",
+            "XPF",
+            "XPT",
+            "XRE",
+            "XSU",
+            "XTS",
+            "XUA",
+            "XXX",
+            "YDD",
+            "YER",
+            "YUD",
+            "YUM",
+            "YUN",
+            "ZAL",
+            "ZAR",
+            "ZMK",
+            "ZMW",
+            "ZRN",
+            "ZRZ",
+            "ZWC",
+            "ZWD",
+            "ZWL",
+            "ZWN",
+            "ZWR"
+          ]
+        }
+      }
+    },
+    "Organization": {
+      "title": "Організація",
+      "description": "Дані про організацію.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Назва",
+          "description": "Назва організації.",
+          "type": ["string"]
+        },
+        "identifier": {
+          "title": "Ідентифікатор",
+          "description": "Дані про ідентифікатор організації.",
+          "$ref": "#/definitions/Identifier"
+        },
+        "address": {
+          "title": "Адреса",
+          "description": "Адреса реєстрації організації або контактна поштова адреса.",
+          "$ref": "#/definitions/Address"
+        },
+        "contactPoint": {
+          "title": "Контактні дані",
+          "description": "Контактні дані організації.",
+          "$ref": "#/definitions/ContactPoint"
+        }
+      }
+    },
+    "Address": {
+      "title": "Адреса",
+      "description": "Зазначення адреси.",
+      "type": "object",
+      "properties": {
+        "streetAddress": {
+          "title": "Вулиця й номер будинку",
+          "type": [
+            "string"
+          ],
+          "description": "Тип, назва вулиці або іншого топоніму, номер будинку. Також, Цей атрибут може включати детальніші складові адреси: корпус, крило, офіс тощо."
+        },
+        "locality": {
+          "title": "Населений пункт",
+          "type": [
+            "string"
+          ],
+          "description": "Назва населеного пункту."
+        },
+        "region": {
+          "title": "Регіон",
+          "type": [
+            "string"
+          ],
+          "description": "Назва регіону."
+        },
+        "postalCode": {
+          "title": "Індекс",
+          "type": [
+            "string"
+          ],
+          "description": "Поштовий індекс."
+        },
+        "countryName": {
+          "title": "Країна",
+          "type": [
+            "string"
+          ],
+          "description": "Назва країни."
+        }
+      }
+    },
+    "ContactPoint": {
+      "title": "Контактні дані",
+      "type": "object",
+      "description": "Контактні дані відповідальної особи, підрозділу або приймальні.",
+      "properties": {
+        "name": {
+          "title": "Ім'я або назва",
+          "type": ["string"],
+          "description": "Прізвище, ім’я, по батькові контактної особи, назва підрозділу або приймальні."
+        },
+        "email": {
+          "title": "Електронна пошта",
+          "type": ["string"],
+          "description": "Адреса електронної пошти."
+        },
+        "telephone": {
+          "title": "Телефон",
+          "type": ["string"],
+          "description": "Номер телефону, включаючи код країни й населеного пункту."
+        },
+        "faxNumber": {
+          "title": "Факс",
+          "type": ["string"],
+          "description": "Номер телефону, включаючи код країни й населеного пункту."
+        },
+        "url": {
+          "title": "URL",
+          "type": ["string"],
+          "description": "Веб-адреса.",
+          "format": "uri"
+        }
+      }
+    },
+    "BudgetBreakdown": {
+      "type": "object",
+      "title": "Структура бюджету",
+      "description": "Структура фінансування проекту за основними джерелами.",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Ідентифікатор статті фінансування.",
+          "mergeStrategy": "ocdsVersion",
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "description": {
+          "title": "Опис",
+          "description": "Назва або опис статті фінансування.",
+          "mergeStrategy": "ocdsVersion",
+          "type": [
+            "string"
+          ]
+        },
+        "amount": {
+          "title": "Обсяг",
+          "description": "Обсяг коштів, що передбачений статтею фінансування.",
+          "$ref": "#/definitions/Value"
+        }
+      }
+    },
+    "Document": {
+      "type": "object",
+      "title": "Документ",
+      "description": "Дані про документи.",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Локальний унікальний ідентифікатор документа.",
+          "type": ["string", "integer"],
+          "minLength": 1
+        },
+        "documentType": {
+          "title": "Тип",
+          "description": "Тип документа відповідно до довідника DocumentType.",
+          "type": ["string"],
+          "codelist": "documentType.csv",
+          "openCodelist": true
+        },
+        "title": {
+          "title": "Назва",
+          "description": "Назва документа.",
+          "type": ["string"]
+        },
+        "number": {
+          "title": "Номер",
+          "description": "[Розширення] Номер документа, що присвоєний його видавником.",
+          "type": ["string"]
+        },
+        "url": {
+          "title": "URL",
+          "description": "Посилання на документ або веб-сторінку, що містить інформацію документа.",
+          "type": ["string"],
+          "format": "uri"
+        },
+        "datePublished": {
+          "title": "Оприлюднено",
+          "description": "Дата оприлюднення документа.",
+          "type": ["string"],
+          "format": "date-time"
+        },
+        "dateModified": {
+          "title": "Востаннє змінено",
+          "description": "Дата внесення змін в документ.",
+          "type": ["string"],
+          "format": "date-time"
+        },
+        "format": {
+          "title": "Формат",
+          "description": "Формат документа відповідно до переліку кодів IANA Media Types(http://www.iana.org/assignments/media-types/). Код 'offline/print' використовується для друкованих документів, 'text/html' — для посилань на веб-сторінку, що містить інформацію документа",
+          "type": ["string"]
+        },
+        "language": {
+          "title": "Мова",
+          "description": "Літерний код мови документа відповідно до в ISO 639-1 (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) або розширені мовні теги BCP47 (http://www.w3.org/International/articles/language-tags/).",
+          "type": [
+            "string"
+          ]
+        }
+      }
+    },
+    "Identifier": {
+      "title": "Ідентифікатор",
+      "description": "Унікальний ідентифікатор організації.",
+      "type": "object",
+      "properties": {
+        "scheme": {
+          "title": "Схема",
+          "description": "Код чинної схеми ідентифікації організацій відповідно до довідника OrganizationIdentifierScheme.",
+          "type": ["string"]
+        },
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Ідентифікатор організації у визначеній схемі ідентифікації організації.",
+          "type": ["string","integer"]
+        }
+      }
+    }
+  }
+}
