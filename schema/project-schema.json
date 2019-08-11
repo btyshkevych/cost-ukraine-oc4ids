@@ -172,9 +172,9 @@
   },
   "definitions": {
     "Item": {
-      "title": "Предмет проекту",
+      "title": "Предмет угоди або проекту в цілому",
       "type": "object",
-      "description": "[Розширення] Характеристика предмета проекту.",
+      "description": "[Розширення] Характеристика предмета.",
       "required": ["id"],
       "properties": {
         "id": {
@@ -185,12 +185,12 @@
         },
         "classification": {
           "title": "Класифікація",
-          "description": "Класифікація предметів за типом об'єктів.",
+          "description": "Основна класифікація предмета.",
           "$ref": "#/definitions/Classification"
         },
         "additionalClassifications": {
           "title": "Додаткові класифікації",
-          "description": "Додаткові класифікації предмету. Наприклад, за категоріями, значенням доріг і вулиць.",
+          "description": "Додаткові класифікації предмета.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/Classification"
@@ -205,7 +205,7 @@
         },
         "unit": {
           "title": "Одиниця вимірювання",
-          "description": "Одиниця вимірювання предмету.",
+          "description": "Одиниця вимірювання предмета.",
           "type": "object",
           "properties": {
             "scheme": {
@@ -228,6 +228,33 @@
         }
       }
     },
+    "Bid": {
+      "title": "Цінова пропозиція",
+      "type": "object",
+      "description": "[Розширення] Цінова пропозиція, що подана учасником торгів.",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Унікальний ідентифікатор пропозиції.",
+          "type": ["string", "integer"],
+          "minLength": 1
+        },
+        "tenderers": {
+          "title": "Учасник(-и)",
+          "description": "Учасник(-и), що подали пропозицію.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Organization"
+          }
+        },
+        "value":{
+          "title": "Вартість",
+          "description": "Вартість запропонованої пропозиції.",
+          "$ref": "#/definitions/Value"
+        }
+      }
+    },
     "ContractingProcess": {
       "title": "Закупівлі",
       "description": "Дані про закупівлі, що виконані в рамках проекту. Джерело даних — Prozorro.",
@@ -243,6 +270,14 @@
           "title": "Резюме",
           "description": "Основні відомості про закупівлю.",
           "$ref": "#/definitions/ContractingProcessSummary"
+        },
+        "releases": {
+          "title": "Пов'язані релізи",
+          "description": "Пов'язані релізи, які містять інформацію про зміни в процесі закупівлі.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LinkedRelease"
+          }
         }
       },
       "required": ["id"]
@@ -297,7 +332,7 @@
         },
         "description": {
           "title": "Опис",
-          "description": "Детальний опис предмету договору.",
+          "description": "Детальний опис предмета угоди.",
           "type": "string"
         },
         "status": {
@@ -312,6 +347,11 @@
           "codelist": "contractingProcessStatus.csv",
           "openCodelist": false
         },
+        "items":{
+              "title": "Предмет",
+              "description": "[Розширення] Структурований опис предмета угоди.",
+              "$ref": "#/definitions/Item"
+            },
         "tender": {
           "title": "Тендер",
           "description": "Характеристика тендеру.",
@@ -363,6 +403,14 @@
               "description": "Кількість учасників тендеру.",
               "type": "number"
             },
+            "bids": {
+              "title": "Цінові пропозиції",
+              "description": "[Розширення] Дані про цінові пропозиції, що подані учасниками торгів.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Bid"
+              }
+            },
             "procuringEntity": {
               "title": "Замовник",
               "description": "[Розширення] Дані про замовника.",
@@ -392,6 +440,14 @@
           "title": "Остаточна вартість",
           "description": "Остаточна вартість угоди.",
           "$ref": "#/definitions/Value"
+        },
+        "warranties": {
+          "title": "Гарантії",
+          "description": "Дані про гарантії на товари, роботи або їх окремі компоненти (властивості).",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Warranty"
+          }
         },
         "documents": {
           "title": "Документи",
@@ -562,7 +618,7 @@
             },
             "identifiers": {
               "title": "Ідентифікатор(-и)",
-              "description": "Один або більше кодів з визначеного газетиру. У випадку автомобільних шляхів, зазначаються індекси.",
+              "description": "Один або більше кодів з визначеного газетира. У випадку автомобільних шляхів, зазначаються індекси.",
               "type": ["array"],
               "items": {
                 "type": ["string"]
@@ -990,7 +1046,7 @@
           "type": [
             "string"
           ],
-          "description": "Тип, назва вулиці або іншого топоніму, номер будинку. Також, Цей атрибут може включати детальніші складові адреси: корпус, крило, офіс тощо."
+          "description": "Тип, назва вулиці або іншого топоніму, номер будинку. Цей атрибут може включати детальніші складові адреси: корпус, крило, офіс тощо."
         },
         "locality": {
           "title": "Населений пункт",
@@ -1136,7 +1192,7 @@
         },
         "format": {
           "title": "Формат",
-          "description": "Формат документа відповідно до переліку кодів IANA Media Types(http://www.iana.org/assignments/media-types/). Код 'offline/print' використовується для друкованих документів, 'text/html' — для посилань на веб-сторінку, що містить інформацію документа",
+          "description": "Формат документа відповідно до переліку кодів IANA Media Types (http://www.iana.org/assignments/media-types/). Код 'offline/print' використовується для друкованих документів, 'text/html' — для посилань на веб-сторінку, що містить інформацію документа",
           "type": ["string"]
         },
         "language": {
@@ -1164,6 +1220,53 @@
           "type": ["string","integer"]
         }
       }
+    },
+    "Warranty": {
+      "title": "Гарантія",
+      "description": "Дані про гарантію на товар, роботу або їх окремі компоненти (властивості)",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Локальний унікальний ідентифікатор гарантії.",
+          "type": ["string", "integer"]
+        },
+        "description": {
+          "title": "Опис",
+          "description": "Назва або опис товару, роботи або їх окремих компонентів (властивостей), на які поширюється гарантія.",
+          "type": ["string"]
+        },
+        "period": {
+          "title": "Період",
+          "description": "Період, на який поширюється гарантія для даного предмета.",
+          "$ref": "#/definitions/Period"
+        } 
+      }
+    },
+    "LinkedRelease": {
+      "title": "Реліз",
+      "description": "Метадані пов'язаного OCDS релізу",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Ідентифікатор",
+          "description": "Унікальний ідентифікатор релізу. У Prozorro відповідає атрибуту 'id', об'єкта 'Tender'.",
+          "type": "string"
+        },
+        "date": {
+          "title": "Дата",
+          "description": "Дата релізу. У Prozorro відповідає атрибуту 'date', об'єкта 'Tender'.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "url": {
+          "title": "URL",
+          "description": "Посилання на реліз.",
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": ["id","tag","date","url"]
     }
   }
 }

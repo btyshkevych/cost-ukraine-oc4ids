@@ -1,0 +1,14 @@
+Code,Title,Source
+contractSigned,Підписаний договір,OCDS for PPPs
+subContract,Договір підряду,OCDS
+environmentalImpact,Оцінка впливу на довкілля,OC4IDS
+awardNotice,Повідомлення про рішення,OCDS
+completionCertificate,Експертний висновок,OCDS
+initializationDecision,Рішення уповноваженого органу про початок проекту,portal.costukraine.org
+completionDeclaration,Декларація про готовність об'єкта до експлуатації,portal.costukraine.org
+acceptanceDeliveryCertificate,Акт приймання-передачі,portal.costukraine.org
+qualityMoniringDecision,Наказ з моніторингу якості,portal.costukraine.org
+qualityMoniringProtocol,Протокол моніторингу якості,portal.costukraine.org
+completionReport,Звіт про виконання договору.,portal.costukraine.org
+bidders,"Документи, що містять інформацію про учасників. Наприклад, сертифікат інженера з технічного нагляду.",OCDS
+budgetApproval,Затвердження фінансування,OC4IDS
